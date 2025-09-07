@@ -1,0 +1,98 @@
+{% extends 'shop/basic.html' %}
+{% load static %}
+
+{% block title %}My Awesome Cart - Tracker{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+    <div class="col mb-4">
+        <h2>Enter your order id and email address to track your order</h2>
+        <form method="post" action="#" id="trackerForm">{% csrf_token %}
+            <div class="mb-3">
+                <label for="orderId" class="form-label">Order Id</label>
+                <input type="text" class="form-control" id="orderId" name="orderId" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Track Order</button>
+        </form>
+    </div>
+
+    <!-- ✅ This section will display order details + updates -->
+    <div id="trackerResult" class="mt-4" style="display:none;">
+        <h3>Order Details</h3>
+        <ul class="list-group mb-3" id="orderDetails"></ul>
+
+        <h3>Order Updates</h3>
+        <ul class="list-group" id="orderUpdates"></ul>
+    </div>
+</div>
+
+<script>
+document.getElementById("trackerForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const orderId = document.getElementById("orderId").value;
+    const email = document.getElementById("email").value;
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+fetch("/shop/tracker/", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrfToken
+    },
+    body: new URLSearchParams({
+        orderId: orderId,
+        email: email
+    })
+})
+
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        const orderDetailsList = document.getElementById("orderDetails");
+        const orderUpdatesList = document.getElementById("orderUpdates");
+        orderDetailsList.innerHTML = "";
+        orderUpdatesList.innerHTML = "";
+
+        if (data.status === "success") {
+            // ✅ Show the result container
+            document.getElementById("trackerResult").style.display = "block";
+
+            // ---- Show order details ----
+            const details = data.orderDetails;
+            let items = details.items;  // ✅ already a dict, no need to JSON.parse
+
+
+            orderDetailsList.innerHTML += `<li class="list-group-item"><strong>Order ID:</strong> ${details.orderId}</li>`;
+            orderDetailsList.innerHTML += `<li class="list-group-item"><strong>Name:</strong> ${details.name}</li>`;
+            orderDetailsList.innerHTML += `<li class="list-group-item"><strong>Email:</strong> ${details.email}</li>`;
+            orderDetailsList.innerHTML += `<li class="list-group-item"><strong>Address:</strong> ${details.address}</li>`;
+            orderDetailsList.innerHTML += `<li class="list-group-item"><strong>Phone:</strong> ${details.phone}</li>`;
+
+            // ✅ Show items
+            orderDetailsList.innerHTML += `<li class="list-group-item"><strong>Items:</strong><ul>`;
+            for (let key in items) {
+                let product = items[key];
+                orderDetailsList.innerHTML += `<li>${product.name} - Qty: ${product.qty}, Price: ₹${product.price}</li>`;
+            }
+            orderDetailsList.innerHTML += `</ul></li>`;
+
+            // ---- Show updates ----
+            data.updates.forEach(update => {
+                orderUpdatesList.innerHTML += `<li class="list-group-item">${update.text} <br><small class="text-muted">${update.time}</small></li>`;
+            });
+
+        } else {
+            document.getElementById("trackerResult").style.display = "block";
+            orderDetailsList.innerHTML = `<li class="list-group-item text-danger">No order found for given details</li>`;
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
+</script>
+{% endblock %}

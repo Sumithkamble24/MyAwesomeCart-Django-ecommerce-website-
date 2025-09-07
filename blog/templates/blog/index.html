@@ -1,0 +1,46 @@
+{% extends 'shop/basic.html' %}
+{% load static %}
+
+{% block title %}Blog - My Awesome Cart{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+
+  <!-- Blog Header -->
+  <div class="text-center mb-5">
+    <h1 class="fw-bold">📰 My Awesome Cart Blog</h1>
+    <p class="text-muted">Latest tips, trends, and updates from the world of shopping</p>
+  </div>
+
+  <!-- Blog Posts -->
+  <div class="row">
+    {% for post in myposts %}
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="row g-0 align-items-center">
+
+          <!-- Thumbnail Column -->
+          <div class="col-4">
+            <img src="{{ post.thumbnail.url }}"
+                 class="img-fluid rounded-start"
+                 alt="{{ post.title }}"
+                 style="height: 100%; width: 100%; object-fit: cover;">
+          </div>
+
+          <!-- Blog Info Column -->
+          <div class="col-8">
+            <div class="card-body">
+              <h6 class="card-title mb-1">{{ post.title }}</h6>
+              <p class="card-text small text-muted">{{ post.chead0|truncatewords:15 }}</p>
+              <a href="/blog/{{ post.post_id }}" class="btn btn-sm btn-outline-primary">Read More</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

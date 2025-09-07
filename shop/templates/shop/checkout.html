@@ -1,0 +1,148 @@
+{% extends 'shop/basic.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+    <!-- Step 1 -->
+    <div class="col mb-4">
+        <h2 class="fw-bold mb-3">Step 1 - Review Your Cart Items</h2>
+        <ul class="list-group shadow-sm" id="items">
+            <!-- Cart items will be inserted here dynamically -->
+        </ul>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="col mb-4">
+        <h2 class="fw-bold mb-3">Step 2 - Enter Address and Other Details</h2>
+        <form method="post" action="/shop/checkout/">{% csrf_token %}
+            <!-- Hidden fields to store cart data -->
+            <input type="hidden" name="items_json" id="itemsJson">
+            <input type="hidden" name="amount" id="amount">
+            <input type="hidden" name="order_id" id="orderId"> <!-- Hidden order ID -->
+
+            <div class="mb-3">
+                <label for="name" class="form-label fw-bold">Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="ex: Sumith" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label fw-bold">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="phone_no" class="form-label fw-bold">Phone Number</label>
+                <input type="tel" class="form-control" id="phone_no" name="phone_no" placeholder="+91-" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="address1" class="form-label fw-bold">Address1</label>
+                <input type="text" class="form-control" id="address1" name="address1" placeholder="1234 Main St" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="address2" class="form-label fw-bold">Address2</label>
+                <input type="text" class="form-control" id="address2" name="address2" placeholder="Apartment, studio, or floor">
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="city" class="form-label fw-bold">City</label>
+                    <input type="text" class="form-control" id="city" name="city" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="state" class="form-label fw-bold">State</label>
+                    <select id="state" name="state" class="form-select" required>
+                        <option selected disabled>Choose...</option>
+                        <option>Karnataka</option>
+                        <option>Maharashtra</option>
+                        <option>Tamil Nadu</option>
+                        <option>Kerala</option>
+                        <option>Delhi</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="zip_code" class="form-label fw-bold">PIN Code</label>
+                    <input type="text" class="form-control" id="zip_code" name="zip_code" required>
+                </div>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary fw-bold px-4">Place Order</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    // Load cart from localStorage
+    let cart = {};
+    if (localStorage.getItem('cart') !== null) {
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+
+    let itemsContainer = document.getElementById('items');
+    itemsContainer.innerHTML = "";
+
+    let totalPrice = 0;
+    let totalQty = 0;
+
+    if (Object.keys(cart).length === 0) {
+        itemsContainer.innerHTML = `<li class="list-group-item text-center">Your cart is empty</li>`;
+    } else {
+        for (let item in cart) {
+            if (cart[item]) {
+                let name = cart[item].name || "Unknown Product";
+                let qty = cart[item].qty || 0;
+                let price = cart[item].price || 0;
+                let subtotal = price * qty;
+
+                totalPrice += subtotal;
+                totalQty += qty;
+
+                let mystr = `
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong>${name}</strong>
+                      <span class="text-muted"> (x${qty})</span>
+                    </div>
+                    <span class="fw-bold">₹${subtotal.toFixed(2)}</span>
+                  </li>`;
+                itemsContainer.innerHTML += mystr;
+            }
+        }
+
+        // Add total row
+        itemsContainer.innerHTML += `
+          <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-secondary">
+            <strong>Total (${totalQty} items)</strong>
+            <strong id="totalPrice">₹${totalPrice.toFixed(2)}</strong>
+          </li>`;
+    }
+
+    // Save cart into hidden fields for Django
+    document.getElementById("itemsJson").value = JSON.stringify(cart);
+    document.getElementById("amount").value = totalPrice.toFixed(2);
+
+    // Generate unique order ID
+    function generateOrderId() {
+        const timestamp = Date.now();
+        const randomNum = Math.floor(Math.random() * 1000);
+        return "ORD" + timestamp + randomNum;
+    }
+    let orderId = generateOrderId();
+    document.getElementById("orderId").value = orderId;
+
+    // Instead of redirecting to Paytm, just alert and clear cart
+    {% if thank %}
+    alert("Thank you for ordering with us. Your order ID is {{ id }} (Generated: " + orderId + "). Your order has been placed successfully.");
+    localStorage.clear();
+    {% endif %}
+
+    $('#amount').val($('#totalPrice').html())
+</script>
+{% endblock %}

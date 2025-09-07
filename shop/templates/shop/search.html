@@ -1,0 +1,95 @@
+{% extends 'shop/basic.html' %}
+{% load static %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+  <h2 class="mb-4">Search Results</h2>
+
+  {% if allProds %}
+    <div class="row">
+      {% for products, range_val, nSlides in allProds %}
+        {% for prod in products %}
+          <div class="col-md-3 mb-4">
+            <div class="card shadow-sm h-100">
+              <img src="/media/{{ prod.image|default:'' }}"
+                   class="card-img-top"
+                   style="height: 180px; object-fit: contain; padding: 10px;"
+                   alt="{{ prod.product_name }}">
+              <div class="card-body text-center">
+                <h6 class="card-title text-truncate">{{ prod.product_name }}</h6>
+                <p class="card-text small text-muted" style="min-height: 32px;">
+                  {{ prod.desc|truncatechars:50 }}
+                </p>
+                <p class="fw-bold text-success">₹{{ prod.price }}</p>
+
+                <div id="cart-controls-{{ prod.product_id }}"
+                     class="d-flex justify-content-center gap-1"
+                     data-name="{{ prod.product_name }}"
+                     data-price="{{ prod.price }}">
+                  <a href="#" id="{{ prod.product_id }}"
+                     class="btn btn-success btn-sm add-to-cart"
+                     data-name="{{ prod.product_name }}"
+                     data-price="{{ prod.price }}">
+                     Add to Cart
+                  </a>
+                </div>
+
+                <button class="btn btn-primary btn-sm mt-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#quickViewModal{{ prod.product_id }}">
+                  Quick View
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick View Modal -->
+          <div class="modal fade" id="quickViewModal{{ prod.product_id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">{{ prod.product_name }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body row">
+                  <div class="col-md-5">
+                    <img src="/media/{{ prod.image }}" class="img-fluid rounded">
+                  </div>
+                  <div class="col-md-7">
+                    <p>{{ prod.desc }}</p>
+                    <h4 class="text-success">₹{{ prod.price }}</h4>
+                    <div class="mt-3 d-flex gap-2">
+                      <a href="#" id="{{ prod.product_id }}"
+                         class="btn btn-success add-to-cart"
+                         data-name="{{ prod.product_name }}"
+                         data-price="{{ prod.price }}">
+                         Add to Cart
+                      </a>
+                      <a href="/shop/products/{{ prod.product_id }}" class="btn btn-primary">Buy Now</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        {% endfor %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-warning">
+      {{ msg|default:"No products found. Try another search." }}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+  console.log("Search page cart system loaded");
+  // Reuse your cart update JS from index.html
+  updateCartUI();
+</script>
+{% endblock %}

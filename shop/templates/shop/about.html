@@ -1,0 +1,42 @@
+{% extends 'shop/basic.html' %}
+{% load static %}
+
+{% block title %}About Us - MyAwesomeCart{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+  <div class="row align-items-center">
+    <!-- About Text -->
+    <div class="col-md-8">
+      <h2 class="mb-3 fw-bold">About <span class="text-primary">MyAwesomeCart</span></h2>
+      <p class="lead">
+        Welcome to <strong>MyAwesomeCart</strong>, your one-stop destination for quality products at affordable prices.
+        Just like Amazon, we aim to provide our customers with a wide variety of categories, seamless shopping experience, and fast delivery.
+      </p>
+      <p>
+        Founded in <b>2025</b>, we started with the simple idea of making online shopping easy and trustworthy.
+        Whether you're looking for electronics, fashion, home essentials, or more – we've got it all covered.
+      </p>
+
+      <h5 class="mt-4">Why Choose Us?</h5>
+      <ul class="list-unstyled ms-3">
+        <li>✅ Wide range of genuine products</li>
+        <li>✅ Safe and secure payment</li>
+        <li>✅ Fast delivery & hassle-free returns</li>
+        <li>✅ 24/7 customer support</li>
+      </ul>
+
+      <p class="mt-3">
+        Thank you for shopping with us. We look forward to serving you better every day.
+        <br><b>Happy Shopping! 🛒</b>
+      </p>
+    </div>
+
+    <!-- About Image -->
+    <div class="col-md-4 text-center">
+      <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=80"
+           alt="About Us" class="img-fluid rounded shadow-lg">
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'shop/basic.html' %}
+{% load static %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Contact Us</h2>
+    <p class="text-center text-muted">We’d love to hear from you! Reach out to us through any of the channels below.</p>
+
+    <div class="row mt-5">
+        <!-- Contact Info -->
+        <div class="col-md-6 mb-4">
+            <h4>Get in Touch</h4>
+            <ul class="list-unstyled mt-3">
+                <li><strong>Email:</strong> support@yourshop.com</li>
+                <li><strong>Phone:</strong> +91 98765 43210</li>
+                <li><strong>Address:</strong> Reva University, Bangalore</li>
+            </ul>
+        </div>
+
+        <!-- Social Media Links -->
+        <div class="col-md-6 mb-4">
+            <h4>Follow Us</h4>
+            <p>Stay connected with us on social media:</p>
+            <div class="d-flex">
+                <a href="https://www.instagram.com/yourshop" target="_blank" class="me-3 text-danger fs-3">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.facebook.com/yourshop" target="_blank" class="me-3 text-primary fs-3">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://twitter.com/yourshop" target="_blank" class="text-info fs-3">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ Contact Form -->
+    <div class="mt-5">
+        <h4>Send Us a Message</h4>
+
+        {% if success %}
+            <div class="alert alert-success" role="alert">
+                ✅ Thank you for contacting us! We’ll get back to you soon.
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Your Name</label>
+                <input type="text" class="form-control" name="name" placeholder="Enter your name" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Your Email</label>
+                <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Message</label>
+                <textarea class="form-control" name="message" rows="4" placeholder="Type your message..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+    </div>
+</div>
+
+<!-- ✅ FontAwesome for social icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}

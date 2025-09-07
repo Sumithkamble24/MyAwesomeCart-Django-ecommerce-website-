@@ -1,0 +1,1 @@
+[{"model": "shop.contact", "pk": 1, "fields": {"name": "sumith", "email": "sumith@123", "message": "its too good website"}}, {"model": "shop.contact", "pk": 2, "fields": {"name": "sumith", "email": "sumeetramble486@gmail.com", "message": "hlo"}}]

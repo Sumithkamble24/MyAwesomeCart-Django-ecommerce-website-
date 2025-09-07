@@ -1,0 +1,82 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}{{ post.title }} - My Awesome Cart Blog{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+  <h2 class="fw-bold mb-3">{{ post.title }}</h2>
+  <p class="text-muted">📅 {{ post.pub_date }}</p>
+
+  <!-- Blog Image -->
+  <div class="text-center mb-4">
+    <img src="{{ post.thumbnail.url }}" class="img-fluid rounded"
+         alt="{{ post.title }}"
+         style="max-width: 700px; width: 100%; max-height: 500px; object-fit: contain;">
+  </div>
+
+  <!-- Blog Content -->
+  <article>
+    <h3>{{ post.head0 }}</h3>
+    <p>{{ post.chead0 }}</p>
+
+    {% if post.head1 %}
+      <h3>{{ post.head1 }}</h3>
+      <p>{{ post.chead1 }}</p>
+    {% endif %}
+
+    {% if post.head2 %}
+      <h3>{{ post.head2 }}</h3>
+      <p>{{ post.chead2 }}</p>
+    {% endif %}
+  </article>
+
+  <!-- Facebook Like & Share Buttons (Flat, no counter) -->
+  <div class="d-flex gap-2 mt-4">
+    <!-- Like button -->
+    <div class="fb-like"
+         data-href="https://your-public-domain.com{{ request.path }}"
+         data-layout="button"
+         data-action="like"
+         data-size="small"
+         data-share="false">
+    </div>
+
+    <!-- Share button -->
+    <div class="fb-share-button"
+         data-href="https://your-public-domain.com{{ request.path }}"
+         data-layout="button"
+         data-size="small">
+    </div>
+  </div>
+
+  <!-- Facebook Comments -->
+  <div class="fb-comments mt-4"
+       data-href="https://your-public-domain.com{{ request.path }}"
+       data-width="100%"
+       data-numposts="5">
+  </div>
+
+  <!-- Previous & Next Blog Navigation -->
+  <div class="d-flex justify-content-between mt-5">
+    {% if post.get_previous_by_pub_date %}
+      <a href="/blog/{{ post.get_previous_by_pub_date.post_id }}" class="btn btn-outline-secondary">&larr; Previous Blog</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+
+    {% if post.get_next_by_pub_date %}
+      <a href="/blog/{{ post.get_next_by_pub_date.post_id }}" class="btn btn-outline-secondary">Next Blog &rarr;</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+  <!-- Facebook SDK in English -->
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous"
+          src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v23.0">
+  </script>
+{% endblock %}
